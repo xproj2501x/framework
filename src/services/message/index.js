@@ -1,0 +1,124 @@
+/**
+ * Framework - Message Service
+ * ===
+ *
+ * @module messageService
+ */
+
+////////////////////////////////////////////////////////////////////////////////
+// Imports
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// Definitions
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// Class
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * MessageService
+ * @class
+ * @memberof module:services
+ */
+class MessageService {
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Private Properties
+  //////////////////////////////////////////////////////////////////////////////
+  /**
+   * @private
+   * @type { object }
+   */
+  _subscribers;
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Public Properties
+  //////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * MessageService
+   * @constructor
+   */
+  constructor() {
+    this._subscribers = {};
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Public Methods
+  ////////////////////////////////////////////////////////////////////////////////
+  /**
+   * Adds a subscriber for the specified message type
+   * @param { string } message - the message type
+   * @param { function } subscriber - the subscriber
+   */
+  subscribe(message, subscriber) {
+    if (!(this._subscribers[message])) {
+      this._subscribers[message] = [];
+    }
+    const SUBSCRIBERS = this._subscribers[message];
+
+    SUBSCRIBERS.push(subscriber);
+  }
+
+  /**
+   * Removes a subscriber for the message type
+   * @param { string } message - the message type
+   * @param { function } subscriber - the subscriber
+   */
+  unsubscribe(message, subscriber) {
+    if (message in this._subscribers) {
+      const SUBSCRIBERS = this._subscribers[message];
+      const INDEX = SUBSCRIBERS.indexOf(subscriber);
+      const VALUE = -1;
+
+      if (INDEX > VALUE) {
+        SUBSCRIBERS.slice(INDEX, 0);
+      }
+    }
+  }
+
+  /**
+   * Publishes a message to all subscribers
+   * @param { object } message -
+   */
+  publish(message) {
+    const SUBSCRIBERS = this._subscribers[message.subject];
+
+    SUBSCRIBERS.forEach((subscriber) => {
+      subscriber(message.body);
+    });
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Private Methods
+  ////////////////////////////////////////////////////////////////////////////////
+  /**
+   * Verifies that
+   * @private
+   * @param message
+   * @param subscriber
+   * @return { int }
+   */
+  _hasSubscriber(message, subscriber) {
+    const SUBSCRIBERS = this._subscribers[message];
+
+    return SUBSCRIBERS.indexOf(subscriber);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Static Methods
+  ////////////////////////////////////////////////////////////////////////////////
+  /**
+   * Static factory method
+   * @return {module:messageService.MessageService}
+   */
+  static create() {
+    return new MessageService();
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Exports
+////////////////////////////////////////////////////////////////////////////////
+export default MessageService;
